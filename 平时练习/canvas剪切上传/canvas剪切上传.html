@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="screen-orientation" content="portrait" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="full-screen" content="yes">
+    <meta name="x5-fullscreen" content="true">
+    <title></title>
+    <script src="jquery-1.8.2.min.js"></script>
+    <script>
+        (function (doc, win) {
+            var docEl = doc.documentElement,
+                resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+                recalc = function () {
+                    var clientWidth = docEl.clientWidth;
+                    if (clientWidth > 750) clientWidth = 750;
+                    docEl.style.fontSize = 50 * (clientWidth / 375) + 'px';
+                };
+            if (!doc.addEventListener) return;
+            win.addEventListener(resizeEvt, recalc, false);
+            doc.addEventListener('DOMContentLoaded', recalc, false);
+        })(document, window);
+
+     //  if (clientWidth > 750) clientWidth = 750;
+       //     docEl.style.fontSize = clientWidth /3.75 + 'px';
+    </script>
+</head>
+
+<body>
+    <style>
+        td {
+            padding: 10px
+        }
+    </style>
+    <table id="table"></table>
+
+    <script>
+
+    </script>
+
+
+    <script>
+        function addClass(obj, className) {
+            obj.className = obj.className ? obj.className + ' ' + className : className
+        }
+
+        function each(arr, fn) {
+            Array.prototype.forEach.call(arr, fn)
+        }
+
+        var ul = document.querySelectorAll('.list li');
+
+        each(ul, function (item) {
+            addClass(item, 'active')
+        });
+
+
+        function Person() {
+            this.method1 = function () { }
+        }
+        Person.prototype.method2 = function () {
+             alert('method2')
+         }
+
+        function Man() {
+            this.man = 'man'
+         }
+
+        // Man.prototype = new Person() ;
+        // console.log(new Person())
+        // console.log(Man.prototype.hasOwnProperty('method1')) // true
+       //   console.log(Man.prototype.hasOwnProperty('method2')) // false
+
+         Man.prototype =  Object.create(Person.prototype);
+         //  Object.create后，  Man.prototype继承了 Person 的原型上的东东
+
+         console.log(new Person())
+       
+
+        Man.prototype.m1 = function () { }
+        Man.prototype.m2 = function () { }
+
+        var m = new Man();
+        
+         console.log(m)
+        console.log(Man.prototype);
+
+       //   m.method2()
+
+        console.log(Man.prototype.constructor == Person)
+        
+        console.log(Man.prototype.hasOwnProperty('method1'))
+        console.log(Man.prototype.hasOwnProperty('method2'))
+
+    
+    </script>
+
+    <input id="file" type="file">
+    <img width="100" id="preImg" alt="">
+    <style>
+        #canvas{
+            border: 1px solid #e6e6e6;
+        }
+    
+    </style>
+
+    <!-- style="width:200px;height:200px"    4.68rem    width="200"  height="200"  -->
+    <canvas id="canvas" width="200" height="300"></canvas>
+
+    <script>
+        var canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+        var cut = {};
+        $('#file').change(function () {
+            var file = $('#file')[0].files[0];
+            cut.drawImage(window.URL.createObjectURL(file));
+            document.getElementById('preImg').src = window.URL.createObjectURL(file);
+        });
+
+
+        cut.initScaleWidth = function (canvas, imgW, imgH) {
+            var w, h;
+            if(imgW >= imgH){
+                w = canvas.width ;
+                h = w*imgH / imgW
+            }else{
+                h = canvas.height;
+                w = imgW*h / imgH;
+            }
+            return {
+                w: w,
+                h: h
+            }
+
+        }
+
+        cut.drawImage = function (src) {
+            //加载图片
+            var image = new Image();
+            image.onload = function () {
+                var initScale = cut.initScaleWidth(canvas, this.width, this.height);
+              //  canvas.width = initScale.w;
+              //  canvas.height = initScale.h;
+
+               // context.beginPath();
+               //画裁剪区域，此处以圆为例
+               // context.arc(initScale.w / 2, initScale.h / 2, 50, 0, 2 * Math.PI);
+                // context.clip();//次方法下面的部分为待剪切区域，上面的部分为剪切区域
+                context.clearRect(0,0,200,300);
+                context.drawImage(image, 0, 0, this.width, this.height ,
+                (canvas.width - initScale.w)/2 ,(canvas.height - initScale.h)/2,
+                initScale.w, initScale.h);
+        
+                var data = canvas.toDataURL('image/jpeg'); // jpg格式
+
+                // dataURL 的格式为 “data:image/png;base64,****”,逗号之前都是一些说明性的文字，我们只需要逗号之后的就行了
+                data = data.split(',')[1];
+                data = window.atob(data);
+                var ia = new Uint8Array(data.length);
+                for (var i = 0; i < data.length; i++) {
+                    ia[i] = data.charCodeAt(i);
+                };
+                console.log(ia);
+
+                // canvas.toDataURL 返回的默认格式就是 image/png
+                // 这个blob 可以放到formData里用来上传 ，也可以通过URL.createObjectURL，生产本地预览的src
+                var blob = new Blob([ia], { type: "image/jpeg" });
+                var src = URL.createObjectURL(blob);
+               // document.getElementById('preImg').src = src;
+
+            }
+
+            image.src = src;
+        }
+    </script>
+
+    <script>
+        function A(){
+            this.name = '11'
+        }
+        function B(name){
+             this.age = 20;
+             A.apply(this,arguments)
+        }    
+       // var b = new B()
+      //  console.log(b.constructor) // function B(){  }
+
+        B.prototype =   Object.create(B.prototype);
+        var b = new B();
+        console.log(b.constructor) 
+
+
+
+        // es6 继承
+        class C {
+            constructor(){
+                this.name = 'name';
+                this.age = 'age'
+            }
+
+        }
+
+        class D  extends C{
+            constructor(name,age){
+                super() // 调用父类的   constructor(name,age)，相当于 C.apply(this,arguments)
+                this.sex =  '女';
+            }
+            
+        }
+
+        var d = new D();
+        console.log(d)
+
+
+ 
+        var foo = "golbal foo";  
+        var myObj = {foo : 'myObj foo'};  
+        var say = function(){  
+            console.log(this.foo);  
+        }  
+        
+        myObj.say = say;  
+        myObj.say();    
+        say();
+
+
+
+    
+    
+    </script>
+
+   
+
+
+
+</body>
+
+</html>

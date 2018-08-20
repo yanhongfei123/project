@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <form action="http://www.baidu.com" id="registerForm">
+        <p>
+            <label>请输入用户名：</label>
+            <input type="text" name="userName" />
+        </p>
+        <p>
+            <label>请输入密码：</label>
+            <input type="text" name="password" />
+        </p>
+        <!-- <p>
+            <label>请输入手机号码：</label>
+            <input type="text" name="phoneNumber" />
+        </p> -->
+        <button id="submit" type="submit">提交</button>
+
+    </form>
+
+    <script>
+        var strategys = {
+            isNotEmpty: function (value, errorMsg) {
+                if (value === '') {
+                    return errorMsg;
+                }
+            },
+            // 限制最小长度
+            minLength: function (value, length, errorMsg) {
+                if (value.length < length) {
+                    return errorMsg;
+                }
+            },
+            maxLength: function (value, length, errorMsg) {
+                if (value.length > length) {
+                    return errorMsg;
+                }
+            },
+            // 手机号码格式
+            mobileFormat: function (value, errorMsg) {
+                if (!/(^1\d{1}[0-9]{9}$)/.test(value)) {
+                    return errorMsg;
+                }
+            }
+        };
+        var Validator = function () {
+            this.cache = []; // 保存效验规则
+        };
+
+        Validator.prototype.addRules = function (dom, ruleList, callback) {
+            this.cache.push(function () {
+                for (var k = 0; k < ruleList.length; k++) {
+                    var item = ruleList[k];
+                    //str 返回 ['minLength' , '6']
+                    var str = item.strategy.split(":");
+                    var strategy = str.shift();
+
+                    str.unshift(dom.value); // 把input的value添加进参数列表
+                    str.push(item.errorMsg); // 把errorMsg添加进参数列表   
+
+                    console.log(strategy, str)
+
+                    // 验证函数
+                    var msg = strategys[strategy].apply(dom, str);
+                    // 返回值不为undefined，才退出循环
+                    if (msg) {
+                        return msg
+                    }
+
+                }
+                if (callback) {
+                    // 单个表单全部验证通过
+                    callback()
+                }
+
+            });
+        };
+        Validator.prototype.start = function () {
+            for (var i = 0; i < this.cache.length; i++) {
+                var msg = this.cache[i](); // 开始效验 并取得效验后的返回信息
+                if (msg) {
+                    return msg
+                }
+            }
+        };
+
+        var validateFunc = function () {
+            var validator = new Validator(); // 创建一个Validator对象
+            /* 添加一些效验规则 */
+            validator.addRules(registerForm.userName, [{
+                    'strategy': 'isNotEmpty',
+                    'errorMsg': '用户名不能为空'
+                },
+                {
+                    'strategy': 'minLength:6',
+                    'errorMsg': '用户名长度不能小于6位'
+                },
+                {
+                    'strategy': 'maxLength:10',
+                    'errorMsg': '用户名长度不能超过10位'
+                },
+            ], function () {
+                alert('userName全部通过')
+            });
+            validator.addRules(registerForm.password, [{
+                    'strategy': 'isNotEmpty',
+                    'errorMsg': '密码不能为空'
+                },
+                {
+                    'strategy': 'minLength:6',
+                    'errorMsg': '密码长度不能小于6位'
+                }
+            ], function () {
+                alert('password全部通过')
+            });
+
+
+            var errorMsg = validator.start(); // 执行验证总函数，并返回效验结果
+            return errorMsg; // 返回效验结果
+
+        };
+        var registerForm = document.getElementById("registerForm");
+
+
+        registerForm.onsubmit = function (event) {
+            var errorMsg = validateFunc();
+            if (errorMsg) {
+                alert(errorMsg);
+                return false;
+            }
+
+        };
+    </script>
+
+</body>
+
+</html>

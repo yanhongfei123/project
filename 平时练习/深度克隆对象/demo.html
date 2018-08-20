@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function deepClone(object) {
+            var o, len;
+            switch (Object.prototype.toString.call(object)) {
+                case '[object Array]':
+                    o = []; len = object.length;
+                    while (len) {
+                        o[len - 1] = deepClone(object[len - 1]);
+                        len--;
+                    }
+                    break;
+                case '[object Object]':
+                    o = {};
+                    for (var i in object) {
+                        o[i] = deepClone(object[i])
+                    };
+
+                    break;
+                default:
+                    o = object
+            }
+
+            return o;
+        }
+
+        var a = {
+            'key1': 'val1',
+            'key2': { 'key22': 'val22' },
+
+        };
+
+        console.log(deepClone(a));
+
+
+        function  deepClone2(o,p){
+            var p = p || {};
+             for(var key in  o){
+                if(typeof o[key] === 'object'){
+                    p[key] = o[key].constructor == Array ? []:{};
+                    deepClone2(o[key],p[key])
+                }else{
+                    p[key] = o[key];
+                }
+               
+             }
+
+            return p
+
+        }
+
+      console.log(  deepClone2(a))
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>

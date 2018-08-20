@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+//    function  test(){
+//     // console.log( Array.prototype.slice.call(arguments).shift())
+//      console.log( Array.prototype.shift.call(arguments))
+//      console.log(arguments)
+//    }
+//    test(100,200)
+
+
+        var Event = (function () {
+            var list = {},
+                listen,
+                trigger,
+                remove;
+            listen = function (key, fn) {
+                if (!list[key]) {
+                    list[key] = [];
+                }
+                list[key].push(fn);
+            };
+            trigger = function (key) {
+                var params = arguments.length >1? Array.prototype.slice.call(arguments,1) : [],
+                    fns = list[key];
+                if (fns) {
+                    for (var i = 0, fn; fn = fns[i++];) {
+                       fn.apply(this, params);
+                   }
+                }
+               
+            };
+            remove = function (key, fn) {
+                var fns = list[key];
+                if (!fns) {
+                    return false;
+                }
+                if (!fn) {
+                    fns && (fns.length = 0); //删除全部
+                } else {  // 删除某一项
+                    for (var i = fns.length - 1; i >= 0; i--) {
+                        var _fn = fns[i];
+                        if (_fn === fn) {
+                            fns.splice(i, 1);
+                        }
+                    }
+                }
+            };
+            return {
+                listen: listen,
+                trigger: trigger,
+                remove: remove
+            }
+        })();
+
+        // 小红订阅如下消息
+        Event.listen('red',fn1 = function(size){
+            console.log("尺码是："+size);  
+        });
+
+        // 小花订阅如下消息
+        Event.listen('red',fn2 = function(size){
+            console.log("再次打印尺码是："+size); 
+        });
+        
+      Event.trigger("red",'42');
+
+
+    </script>
+
+ 
+
+
+
+</body>
+
+</html>

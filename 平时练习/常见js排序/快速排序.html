@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+        function quickSort(arr) {
+            if (arr.length < 2) {
+                return arr
+            }
+            var left = [], right = [],  mid = arr.splice(Math.floor(arr.length / 2), 1);
+            for(var i = 0;i<arr.length;i++){
+                var item = arr[i] ;
+                if(item < mid){
+                    left.push(item)
+                }else{
+                    right.push(item)
+                }
+            }
+            return quickSort(left).concat(mid,quickSort(right))
+
+        }
+      //  console.log(quickSort( [100]))
+        console.log(quickSort( [100, 300, 500, 200,400, 600, 1000, 900,700,800]))
+        //  100  300 200  400 500 600 900 700  800  1000
+        // 100  200 300 400 500  600 700  800  900  10000
+
+
+    </script>
+
+</body>
+
+</html>

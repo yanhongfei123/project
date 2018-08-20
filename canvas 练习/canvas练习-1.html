@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../jquery-1.8.2.min.js"></script>
+    <script src="jcScript.js"></script>
+</head>
+<body>
+<canvas height="500" width="500" id="canvas"></canvas>
+<input type="button" value="点击" id="input1" />
+<script type="text/javascript">
+
+        jc.clear('canvas');
+        jc.start('canvas',true);
+        var oInput=document.getElementById("input1");
+        var oc=document.getElementById("canvas");
+        var cxt=oc.getContext("2d");
+
+        jc.circle(100,100,50,'rgba(255,0,0,0.8)',1).id("c2")/*.click(function(){
+           alert(555)
+        });
+*/
+        jc("#c2").click(function(){
+            alert(555)
+        });
+
+
+        /*绘矩形*/
+        jc.rect(150,40,50,60,1).rotate(30,'center').click(function(){
+            alert(123)
+        });
+
+
+        /*绘圆*/
+      //  jc.arc(80,200,60,30,90,false,false);//第1个布尔值(0 或者 1) 表示取的是左边还是右边，第2个布尔值 表示是否填充颜色
+        jc.arc(80,400,60,30,90,true,false);
+        jc.arc(80,300,60,30,90,true,true);//默认黑色填充
+        jc.arc(100,120,90,15,95,true,'rgba(205,43,18,0.4)',true);//填充
+
+
+
+        /*绘线*/
+        jc.line([ [0,0],[250,265]  ]);
+
+        jc.line([ [300,150],[450,150],[450,200] ],'#ff5587');
+
+        jc.line([ [150,150],[250,150],[250,200] ],'#ff5587',true);//填充
+
+        jc.line([[60,20],[75,132],[220,60],[200,100]],'#ff0000',true);
+
+
+
+
+
+
+
+        jc.circle(40,80,40,'#00FFFF',1)
+                .name('myCircles_1');
+        jc.circle(90,80,40,'#FFFF00',1)
+                .name('myCircles_1');
+        jc.circle(150,80,40,'#FF00FF',1)
+                .name('myCircles_1');
+
+
+
+
+        jc.start('canvas');
+
+        oInput.onclick=function(){
+          //  jc.clear('canvas');
+
+            jc("#c2").color("#ff0000");
+
+          //   jc("#c2").color("#ff0000").animate({x:400,y:200,radius:80},1500);
+
+          // 从坐标为100,100半径为50的
+//大圆慢慢匀速缩小到坐标为200,200半径为5的小圆，总共耗时2秒.
+
+          // jc("#c2").color("#ff0000").animate({translate:{x:200,y:200}},2000)
+
+
+          /*  jc('.myCircles_1')
+                    .animate({rotate:
+                    {angle:360,x:150,y:80}},
+                    3800,{fn:'elastic'});*/
+
+
+        }
+
+</script>
+
+
+</body>
+</html>

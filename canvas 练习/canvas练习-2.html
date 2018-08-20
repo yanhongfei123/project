@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+
+    <!--[if lt IE9]>
+          <script src="http://cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+    <![endif]-->
+
+    <style>
+        section{display: block;width: 500px;height: 300px;background:#000;}
+    </style>
+
+</head>
+<body>
+
+<section>2222</section>
+
+<canvas id="mouse" width="700" height="500">此浏览器不支持canvas</canvas>
+
+<script>
+    var canvas = document.getElementById('mouse');
+    var context = canvas.getContext('2d');
+    //圆形
+    function draw_arc(x, y, radius, color) {
+        var obj = {
+            x: x,
+            y: y,
+            radius: radius,
+            color: color,
+            draw: function() {
+                context.beginPath();
+                context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
+                context.closePath();
+                context.fillStyle = this.color;
+               /// context.strokeStyle = this.color;
+                context.fill();
+                context.lineWidth = 5;
+                context.stroke();
+            }
+        };
+        obj.draw();
+    }
+    //椭圆
+    function draw_Tarc(x, y, radius, color, a, b){
+        //max是等于1除以长轴值a和b中的较大者
+        //i每次循环增加1/max，表示度数的增加
+        //这样可以使得每次循环所绘制的路径（弧线）接近1像素
+        var step = (a > b) ? 1 / a : 1 / b;
+        context.lineWidth = 5;
+        context.beginPath();
+        context.moveTo(x + a, y); //从椭圆的左端点开始绘制
+        for (var i = 0; i < 2 * Math.PI; i += step) {
+            //参数方程为x = a * cos(i), y = b * sin(i)，
+            //参数为i，表示度数（弧度）
+            context.lineTo(x + a * Math.cos(i), y + b * Math.sin(i));
+        }
+        context.closePath();
+        context.fillStyle = color;
+        context.fill();
+        context.stroke();
+    }
+
+    //画线
+    function draw_line(a_start, a_end, b_start, b_end) {
+        context.beginPath();
+        context.moveTo(a_start, a_end);
+        context.lineTo(b_start, b_end);
+        context.lineWidth = 5;
+        context.stroke();
+    }
+    function draw_mouse() {
+        draw_arc(100, 100, 30, 'rgb(192,221,244)'); //左耳朵
+        draw_arc(200, 100, 30, 'rgb(192,221,244)'); //右耳朵
+        draw_Tarc(150, 220, 10, 'rgb(192,221,244)', 90, 120); //脸
+        draw_arc(130, 180, 10, 'black'); //左眼睛
+        draw_arc(170, 180, 10, 'black'); //右眼睛
+        draw_line(216, 279, 237, 303); //右1
+        draw_line(211, 290, 225, 307); //右2
+        draw_line(91, 289, 67, 299); //左1
+        draw_line(84, 283, 59, 294); //左2
+        draw_arc(153, 338, 15, 'black'); //鼻子
+    }
+    draw_mouse();
+
+    draw_cat();
+    function draw_cat() {
+    /*   x = 450;
+        while (x > 257) {
+            x--;
+            setTimeout(draw_arc, 500, 457, x, 15, 'white');
+            console.log(x);
+        }*/
+        draw_arc(364, 137, 30, 'rgb(255,205,90)'); //左耳朵
+        draw_arc(534, 137, 30, 'rgb(255,205,90)'); //右耳朵
+        draw_Tarc(450, 220, 10, 'rgb(255,205,90)', 120, 90); //脸
+        draw_arc(430, 194, 10, 'black'); //左眼睛
+        draw_arc(490, 194, 10, 'black'); //右眼睛
+        draw_line(522, 230, 553, 223); //右1
+        draw_line(521, 244, 547, 259); //右2
+        draw_line(399, 226, 368, 218); //左1
+        draw_line(400, 247, 377, 258); //左2
+        draw_arc(457, 257, 15, 'white'); //鼻子
+    }
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

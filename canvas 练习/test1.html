@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script  src="../jquery-1.8.2.min.js"></script>
+</head>
+<body>
+<div class="lists"></div>
+
+<script>
+
+    window.requestAnimFrame = (function(){
+        return  window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame    ||
+                window.oRequestAnimationFrame      ||
+                window.msRequestAnimationFrame     ||
+                function(callback,element){
+                    window.setTimeout(callback, 1000 / 60);
+                };
+    })();
+    var canvas, context, x=100, y=100, L=3,T=5;
+    canvas = document.createElement( 'canvas' );
+    canvas.width =500;
+    canvas.height =500;
+    context = canvas.getContext( '2d' );
+    document.body.appendChild( canvas );
+
+    function animate() {
+        draw();//画圆
+        upDate();//移动
+        requestAnimFrame(animate);
+    }
+    function draw() {
+        context.clearRect(0,0,500,500);
+        context.save();
+        context.beginPath();
+        context.fillStyle = 'black';
+        context.fillRect( 0, 0,500,500 );
+        context.beginPath();
+        context.arc( x, y,80, 0, Math.PI * 2, true );
+        context.fillStyle = '#FFF';
+        context.fill();
+        context.clip();
+        context.font='bold 100px  Arial';
+        context.textAlign='center';
+        context.textBaseline='middle';
+        context.fillStyle='#058';
+        context.fillText('CANVASCANVAS',50,50);
+        context.fillText('CANVASCANVAS',50,100);
+        context.fillText('CANVASCANVAS',50,200);
+        context.fillText('CANVASCANVAS',50,300);
+        context.fillText('CANVASCANVAS',50,400);
+        context.fillText('CANVASCANVAS',50,500);
+        context.restore();
+    }
+
+    function  upDate(){
+        x+=L;
+        y+=T;
+        L=(x>420 || x<80 )?-L:L;
+        T=(y>420 || y<80 )?-T:T;
+    }
+
+    window.onload=function(){
+        animate();
+    }
+
+
+
+</script>
+
+<div class="pp"  style="position: relative;width:100px;height: 100px;background: #808080;transition: all 3s linear ;">00000000</div>
+
+<script>
+    //n=容器的角度
+    var n=0;
+
+    $(document).click(function(){
+        //z=最终要到达的角度
+        var z = 450;
+        for(var i=0;i<z;i++){
+            if(n==300){
+                $(".pp").css({
+                    'transform': 'rotate('+n+'deg)'
+                });
+
+            }else{
+                n++;
+                $(".pp").css({
+                    'transform': 'rotate('+n+'deg)'
+                });
+            }
+
+        }
+    })
+
+
+
+
+</script>
+
+</body>
+</html>

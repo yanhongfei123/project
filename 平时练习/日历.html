@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../jquery-1.8.2.min.js"></script>
+    <style>
+        #div1 {
+            width: 1000px;
+            color: #fff;
+        }
+
+        #nowTime,
+        #nextTime {
+            width: 400px;
+            height: 200px;
+            float: left;
+            margin-left: 50px
+        }
+
+        .L {
+            float: left;
+        }
+
+        .R {
+            float: right;
+        }
+
+        .C {
+            text-align: center
+        }
+
+        .L span,
+        .R span {
+            display: block;
+            width: 30px;
+        }
+
+        .title {
+            padding: 0 10px;
+            text-align: center;
+            overflow: hidden;
+            height: 30px;
+            line-height: 30px;
+            background-image: -webkit-linear-gradient( right, #ff0000, #000);
+            background-image: -moz-linear-gradient( right, #ff0000, #000);
+        }
+
+        th {
+            width: 55px;
+            height: 15px;
+            color: #000
+        }
+
+        .red {
+            color: red
+        }
+
+        .blue {
+            color: #0000ff;
+        }
+
+        td {
+            color: #adadad;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="text" />
+    <input type="text" />
+    <button>确定</button>
+
+    <br/><br/><br/>
+    <div id="div1">
+        <div class="nowTime" id="nowTime">
+            <div class="title">
+                <div class="L"><span onclick="changeDate(this)">4</span></div>
+                <div class="C"><span>2017</span> 年 <span>5</span>月</div>
+            </div>
+
+        </div>
+
+        <div class="nextTime " id="nextTime">
+            <div class="title">
+                <div class="R"><span onclick="changeDate(this)">7</span></div>
+                <div class="C"><span>2018</span> 年 <span>1</span>月</div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        console.log([2017, 2018].reduce((pre, next) => pre.concat([[next]]), []));
+
+        var oDiv1 = document.getElementById('div1');
+        var oNowTime = document.getElementById('nowTime');
+        var oNextTime = document.getElementById('nextTime');
+        var oBtn = document.getElementsByTagName('button')[0];
+        var bBtn = true, z, index = 0;
+        var Dat = new Date();
+        var year = Dat.getFullYear();//当前年份
+        var month = Dat.getMonth();//当前月份
+        showDate(oNowTime);
+        showDate(oNextTime);
+        var otd = document.getElementsByTagName('td');
+        showColor(Dat.getDate());
+
+        oBtn.onclick = function () {
+            oDiv1.style.display = bBtn ? 'none' : 'block';
+            bBtn = !bBtn;
+        };
+        //each函数循环
+        function each(obj, fn) {
+            for (var i = 0; i < obj.length; i++) {
+                fn.call(obj[i], obj[i], i);
+            }
+        }
+        //添加数据
+        function showDate(obj) {
+            var oTable = document.createElement('table');
+            var oThead = document.createElement('tHead');
+            var oTr = document.createElement('tr');
+            var arr = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+            for (var i = 0; i < 7; i++) {
+                var oTh = document.createElement('th');
+                oTh.innerHTML = arr[i];
+                if (i == 0 || i == 6) {
+                    oTh.className = 'red'
+                }
+                oTr.appendChild(oTh);
+            }
+            oThead.appendChild(oTr);
+            oTable.appendChild(oThead);
+            obj.parentNode.parentNode.parentNode.appendChild(oTable);
+
+            var oTbody = document.createElement('tBody');//创建tBody
+
+            for (var k = 0; k < 6; k++) {
+                var Tr = document.createElement('tr');//创建tr
+                for (var j = 0; j < 7; j++) {
+                    var Td = document.createElement('td');//创建td
+                    Tr.appendChild(Td);
+                }
+                oTbody.appendChild(Tr);
+            }
+            oTable.appendChild(oTbody);
+            obj.appendChild(oTable);
+            var td = obj.getElementsByTagName('td');//获取当前日历里面的td
+            var nowYear = obj.getElementsByTagName('span')[1].innerHTML;//获取当前日历里面的年份
+            var nowMon = obj.getElementsByTagName('span')[2].innerHTML;//获取当前日历里面的月份
+
+            var firstDay = new Date(nowYear, (nowMon - 1), 1).getDay(); //当前年 ，当前月分1号
+
+            if (nowMon == 1 || nowMon == 3 || nowMon == 5 || nowMon == 7 || nowMon == 8 || nowMon == 10 || nowMon == 12) {
+                z = 31;
+            } else if (nowMon == 4 || nowMon == 6 || nowMon == 9 || nowMon == 11) {
+                z = 30;
+            }
+            else if (nowMon == 2 && isLeepYear(nowYear)) {
+                z = 29;
+            }
+            else {
+                z = 28;
+            }
+
+            // 当前月份的第一天是星期几，就从第几个td开始填数字
+            for (var l = 0; l < z; l++) {
+                td[l + firstDay].innerHTML = l + 1; //填数字
+            }
+
+        }
+
+
+        //每次点击更改数据
+        function changeDate(obj) {
+            var preM = parseInt(obj.innerHTML);
+            var mSpan = obj.parentNode.parentNode.getElementsByTagName('span')[2];
+            var ySpan = obj.parentNode.parentNode.getElementsByTagName('span')[1];
+            var nowM = parseInt(mSpan.innerHTML);
+            var nowY = parseInt(ySpan.innerHTML);
+            var nowObj = obj.parentNode.parentNode.parentNode;
+
+            var Class = nowObj.className;
+            if (Class == 'nowTime') {
+                if (preM == 1) {
+                    obj.innerHTML = 12;
+                    mSpan.innerHTML = nowM - 1;
+                }
+                else if (preM == 12) {
+                    obj.innerHTML = preM - 1;
+                    ySpan.innerHTML = nowY - 1;
+                    mSpan.innerHTML = 12;
+                }
+                else {
+                    obj.innerHTML = preM - 1;
+                    mSpan.innerHTML = nowM - 1;
+                }
+
+            }
+            else {
+                if (preM == 12) {
+                    obj.innerHTML = 1;
+                    mSpan.innerHTML = nowM + 1;
+                }
+                else if (preM == 1) {
+                    obj.innerHTML = preM + 1;
+                    ySpan.innerHTML = nowY + 1;
+                    mSpan.innerHTML = 1;
+                }
+                else {
+                    obj.innerHTML = preM + 1;
+                    mSpan.innerHTML = nowM + 1
+                }
+            }
+
+            nowObj.removeChild(nowObj.getElementsByTagName('table')[0]);
+            showDate(nowObj);
+
+        }
+
+        //是不是闰年
+        function isLeepYear(y) {
+            if (y % 4 == 0 && y % 100 != 0) {
+                return true
+            }
+            else {
+                if (y % 400 == 0) {
+                    return true
+                }
+                else {
+                    return false
+
+                }
+            }
+        }
+
+        //不同的日期颜色展示
+        function showColor(date) {
+            var arr = [];
+            for (var i = 0; i < otd.length; i++) {
+                if (otd[i].innerHTML != '') {
+                    arr.push(otd[i])
+                }
+            }
+            for (var j = 0; j < arr.length; j++) {
+                if (arr[j].innerHTML == date) {
+                    index = j;
+                    arr[j].className = 'red';
+                    break
+                }
+            }
+            for (var k = index; k < index + 10; k++) {
+                arr[k + 1].className = 'blue'
+
+            }
+
+
+        }
+    </script>
+
+
+    <button id="showTime" onclick="changeTime()">发送验证码</button>
+
+    <script>
+        var t = 60;
+        function changeTime() {
+            t--;
+            document.getElementById('showTime').innerHTML = '(' + t + ')' + '秒后重新发送';
+            if (t < 0) {
+                document.getElementById('showTime').innerHTML = '发送验证码';
+                document.getElementById('showTime').removeAttribute('disabled');
+            } else {
+                setTimeout(changeTime, 1000);
+                document.getElementById('showTime').style.disabled = true;
+            }
+
+        }
+        function arrWithoutLoop (n){
+            let a = 1;
+            return   Array(n).fill(0).reduce((arr)=>{ return arr.concat(a++)  },[])
+        }
+
+        console.log(arrWithoutLoop(10))
+
+
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>

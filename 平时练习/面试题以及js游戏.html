@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="../网页特效专栏111111111111111/game.css">
+    <link rel="stylesheet" href="../项目/春水堂/pay/basic.css">
+    <link rel="stylesheet" href="../idangerous.swiper.css">
+    <link rel="stylesheet" href="../移动端/移动web相册/animate.css">
+    <script src="./demo/jquery-1.8.2.min.js"></script>
+    <script src="../idangerous.swiper.min.js"></script>
+    <script src="../idangerous.swiper.scrollbar-2.4.1.min.js"></script>
+    <script src="../commonFunctions.js"></script>
+    <script src="../网页特效专栏111111111111111/aneobj.js"></script>
+    <script src="../网页特效专栏111111111111111/fruit.js"></script>
+    <title></title>
+    <style type="text/css">
+        .skip:hover {
+            animation: skip 0.5s linear 1s
+        }
+
+        .swiper-container {
+            height: 300px;
+            width: 800px;
+        }
+
+        .pagination {
+            position: absolute;
+            z-index: 20;
+            left: 10px;
+            bottom: 10px;
+        }
+
+        .swiper-pagination-switch {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 8px;
+            background: #222;
+            margin-right: 5px;
+            opacity: 0.8;
+            border: 1px solid #fff;
+            cursor: pointer;
+        }
+
+        .swiper-active-switch {
+            background: red;
+        }
+
+        .swiper-slide .title {
+            width: 100px;
+            transition: all 0.5s ease-out 0s;
+            transform: translate3d(0, 50px, 0);
+        }
+        /*   .swiper-slide-active  .title{
+            transform: translate3d(0,0px,0)  rotate(180deg)  ;
+        }
+*/
+
+        .zz {
+            animation: rotate 1s steps(1) infinite 0s;
+        }
+
+        .pp {
+            animation: xz 2s steps(1) infinite 0s;
+        }
+
+        @-webkit-keyframes xz {
+            0% {
+                background: url("../img/zzr_1.png");
+            }
+            25% {
+                background: url("../img/zzr_2.png");
+            }
+            50% {
+                background: url("../img/zzr_3.png");
+            }
+            75% {
+                background: url("../img/zzr_4.png");
+            }
+
+            100% {
+                background: url("../img/zzr_1.png");
+            }
+        }
+
+        @-webkit-keyframes rotate {
+            0% {
+                background-position: 0 0;
+            }
+            25% {
+                background-position: -150px 0;
+            }
+            50% {
+                background-position: -300px 0;
+            }
+            75% {
+                background-position: -450px 0;
+            }
+
+            100% {
+                background-position: -450px 0;
+            }
+        }
+    </style>
+
+
+</head>
+
+
+<body>
+    <script>
+        function Master() {
+            this.feed = function (animal, food) {
+                console.log('主人给' + animal.name + '喂' + food.name)
+            }
+        }
+
+        function Animal(name) {
+            this.name = name;
+
+        }
+        function Dog(name) {
+            Animal.call(this, name);// 通过call 继承父类属性,如果方法写在外面则继承不了
+
+            //  this.nam=Animal;
+            //  this.nam()       通过对象冒充   继承父类属性
+        }
+
+        function Food(name) {
+            this.name = name;
+
+        }
+
+        function Fish(name) {
+            Food.call(this, name); //同上
+        }
+
+
+        var master = new Master();
+        var dog = new Dog('小狗');
+        var fish = new Fish('骨头');
+
+        master.feed(dog, fish);
+
+    </script>
+
+
+    <!--非构造函数继承-->
+
+    <script>
+        function A() {
+            this.hobby = 'youyong';
+            this.name = 'longze';
+        }
+
+
+        A.prototype.age = 29;
+
+        function B() {
+            A.call(this);
+        }
+
+
+        B.prototype = new A();
+        B.prototype.constructor = B;
+
+        //*Object.create(A.prototype)*/
+        //  B.prototype.constructor= B;
+
+        var d = new B();
+
+ //   console.log(d.name);
+ //   console.log(d.age)
+
+    </script>
+
+
+    <div id="box" style="display: none">
+        <div id="0" style="width: 20px;height: 20px;background-color: brown;margin-bottom: 10px"></div>
+        <div id="1" style="width: 20px;height: 20px;background-color: brown;margin-bottom: 10px"></div>
+        <div id="2" style="width: 20px;height: 20px;background-color: brown;margin-bottom: 10px"></div>
+        <div id="3" style="width: 20px;height: 20px;background-color: brown;margin-bottom: 10px"></div>
+        <div id="4" style="width: 20px;height: 20px;background-color: brown;margin-bottom: 10px"></div>
+        <div id="5" style="width: 20px;height: 20px;background-color: brown;margin-bottom: 10px"></div>
+    </div>
+    <script>
+        window.onload = function () {
+            var box = document.getElementById('box');
+            var div = box.getElementsByTagName('div');
+
+            box.onclick = function (e) {
+                e = e || window.event;
+                var target = e.srcElement || e.target;
+                if (target.nodeName.toLowerCase() == 'div') {
+                    var index = parseInt(target.id);
+                    for (var j = 0; j < index + 1; j++) {
+                        div[j].style.backgroundColor = 'black'
+                    }
+                    for (var k = index + 1; k < div.length; k++) {
+                        div[k].style.backgroundColor = ' brown'
+                    }
+                }
+            };
+        }
+
+    </script>
+
+
+    <script>
+        var str = /^[a-zA-Z]{1}\w{5,29}/g;
+
+        var Obj = function (msg) {
+            this.msg = msg;
+            this.shout = function () {
+                alert(this.msg);
+            };
+            this.waitAndShout = function () {
+                var _this = this;
+                setTimeout(function () {
+                    alert(_this)
+                }, 1000)
+            }
+        };
+        var aa = new Obj("abc");
+
+// aa.waitAndShout();
+
+    </script>
+
+
+    <div id="cont">
+        <div class="btn">游戏开始</div>
+    </div>
+
+
+    <script>
+        window.onload = function () {
+
+            $('.btn').click(function () {
+                $(this).hide();
+                Game.init();
+            });
+
+        };
+
+        var Game = {
+            init: function () {  //初始化
+                this.oParent = $('#cont');
+                this.createScore();
+                this.createArmy(0);//第一关
+                this.MoveArmy();
+                this.createPlane();
+            },
+
+            //蜜蜂的种类
+            ArmyStyle: {
+                e1: { style: 'army1', blood: 1, speed: 5, score: 1 },//第1种蜜蜂的速度，含血量，分值
+                e2: { style: 'army2', blood: 2, speed: 7, score: 3 },//第2种蜜蜂的速度，含血量，分值
+                e3: { style: 'army3', blood: 3, speed: 10, score: 5 }//第3种蜜蜂的速度，含血量，分值
+            },
+
+            planeStyle: {
+                style: 'plane1',
+                bulletStyle: 'bullet'
+
+            },
+
+            gk: [//第1关蜜蜂的排列布局
+                {
+                    map: ['e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2',
+                        'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2',
+                        'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2',
+                        'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1',
+                        'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1',
+                        'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1'],
+                    Xspeed: 1, //x轴移动速度
+                    Yspeed: 1,//y轴移动速度
+                    colNum: 10,//一行排列的数量
+                    time: 2000
+                },
+
+                {//第2关蜜蜂的排列布局
+                    map: ['e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3',
+                        'e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3',
+                        'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2',
+                        'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2',
+                        'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1',
+                        'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1'],
+                    Xspeed: 2, //x轴移动速度
+                    Yspeed: 2,//y轴移动速度
+                    colNum: 10,//一行排列的数量
+                    time: 1000//每隔多少时间飞下来
+                },
+                {//第3关蜜蜂的排列布局
+                    map: ['e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3',
+                        'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2',
+                        'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1',
+                        'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2', 'e2',
+                        'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1', 'e1',
+                        'e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3', 'e3'],
+                    Xspeed: 3, //x轴移动速度
+                    Yspeed: 3,//y轴移动速度
+                    colNum: 10,//一行排列的数量
+                    time: 1000 //每隔多少时间飞下来
+                }
+
+            ],
+
+            createScore: function () {
+                //创建积分
+                $('<div>').addClass('score_cont').html('积分<span class="score">0</span>').appendTo(this.oParent);
+                this.span = $('.score')
+
+            },
+            createArmy: function (iNum) {
+                var gk = this.gk[iNum];
+                var Arry = [];
+
+                $('<ul>').addClass('ul_cont').width(this.gk[iNum].colNum * 50).appendTo(this.oParent);
+                this.ul = $('.ul_cont');
+                this.ul.css({
+                    'position': 'absolute',
+                    'left': ($(window).width() - this.ul.width()) / 2 + 'px'
+                });
+
+                for (var i = 0, len = gk.map.length; i < len; i++) {
+                    $('<li>').addClass(this.ArmyStyle[gk.map[i]].style)
+                        .attr({
+                            'blood': this.ArmyStyle[gk.map[i]].blood,
+                            'speed': this.ArmyStyle[gk.map[i]].speed,
+                            'score': this.ArmyStyle[gk.map[i]].score
+                        }).appendTo(this.ul);
+
+                }
+
+                this.ul.find('li').each(function (i) {
+                    Arry.push({ 'left': $(this)[0].offsetLeft, 'top': $(this)[0].offsetTop });
+                });
+                //需要再循环一次
+                this.ul.find('li').each(function (i) {
+                    $(this).css({
+                        'position': 'absolute',
+                        'left': Arry[i].left + 'px',
+                        'top': Arry[i].top + 'px'
+
+                    });
+                });
+                this.g = gk;
+                this.lis = this.ul.find('li');
+
+            },
+            MoveArmy: function () {
+                var _this = this;
+                var sped = _this.g.Xspeed;
+                var spedY = _this.g.Yspeed;
+
+                setInterval(function () {
+
+                    if (_this.ul.offset().left > $(window).width() - _this.ul.width() || _this.ul.offset().left < 0) {
+                        sped *= -1;
+                    }
+
+                    if (_this.ul.offset().top > 100 - _this.ul.height() || _this.ul.offset().top < 0) {
+                        spedY *= -1;
+                    }
+
+
+                    _this.ul.css('left', (_this.ul.offset().left + sped) + 'px');
+                    _this.ul.css('top', (_this.ul.offset().top + spedY) + 'px')
+
+
+                }, 100000)
+
+            },
+
+            createPlane: function () {
+
+                $('<div>').addClass('plane1').appendTo(this.oParent);
+                this.plane = $('.plane1');
+                var time;
+                var _this = this;
+                var w = $(window).width() - _this.plane.width();
+
+                $(document).keydown(function (e) {
+                    var el = e || window.event;
+                    switch (el.keyCode) {
+                        case 37:
+                            if (!time) {
+                                time = setInterval(function () {
+                                    _this.plane.css('left', _this.plane.offset().left - 5 + 'px');
+                                    if (_this.plane.offset().left < 0) {
+                                        _this.plane.css('left', 0)
+                                    }
+
+
+                                }, 10)
+                            }
+                            break;
+
+                        case 39:
+                            if (!time) {
+                                time = setInterval(function () {
+                                    _this.plane.css('left', parseInt(_this.plane.css('left')) + 4 + 'px');
+                                    if (_this.plane.offset().left > w) {
+                                        _this.plane.css('left', w + 'px')
+                                    }
+                                }, 10)
+                            }
+
+                            break;
+
+                    }
+
+                });
+
+                var num = 0;
+                $(document).keyup(function (e) {
+                    var el = e || window.event;
+                    var timer;
+                    clearInterval(time);
+                    time = null;
+
+                    if (el.keyCode == 32) {
+                        var bullet = document.createElement('div');
+                        bullet.className = 'bullet';
+                        $('body')[0].appendChild(bullet);
+                        bullet.style.left = _this.plane[0].offsetLeft + _this.plane[0].offsetWidth / 2 + 'px';
+                        bullet.style.top = _this.plane[0].offsetTop - 30 + 'px';
+
+                        bullet.timer = setInterval(function () {
+
+                            var offsetTop = bullet.offsetTop;
+
+                            bullet.style.top = offsetTop - 1 + 'px';
+
+                            if (bullet.offsetTop < 0) {
+                                clearInterval(bullet.timer);
+                                bullet.timer = null;
+                                $('body')[0].removeChild(bullet);//删除子弹
+                            }
+                            //子弹和每一个方块进行碰撞检测
+                            for (var j = 0; j < _this.lis.length; j++) {
+                                if (_this.pz(bullet, _this.lis[j])) {
+
+                                    num += parseInt(_this.lis[j].getAttribute('speed'));//累加积分
+                                    console.log(num);
+
+                                    var blood = parseInt(_this.lis[j].getAttribute('blood'));
+
+                                    if (blood == 1) {
+                                        _this.lis[j].parentNode.removeChild(_this.lis[j]);//碰到删除方块
+                                    }
+                                    else {
+                                        _this.lis[j].setAttribute('blood', blood - 1);//血量减1
+                                    }
+
+                                    bullet.parentNode.removeChild(bullet);//删除子弹
+                                    clearInterval(bullet.timer);//清楚计时器
+                                    bullet.timer = null;
+                                }
+
+                            }
+
+                        }, 5);
+
+                    }
+                })
+            },
+            pz: function (obj1, obj2) {
+                var l1 = obj1.offsetLeft,
+                    t1 = obj1.offsetTop,
+                    w1 = obj1.offsetWidth,
+                    h1 = obj1.offsetHeight,
+                    l2 = obj2.offsetLeft + obj2.parentNode.offsetLeft,
+                    t2 = obj2.offsetTop + obj2.parentNode.offsetTop,
+                    w2 = obj2.offsetWidth,
+                    h2 = obj2.offsetHeight;
+
+                if (l1 + w1 < l2 || l1 > l2 + w2 || t1 + h1 < t2 || t1 > t2 + h2) {
+                    return false
+                }
+                else {
+                    return true;
+                }
+
+            }
+
+        };
+//    window.location="../error.html";
+
+    </script>
+
+    <div id="div"></div>
+
+
+    <script>
+        var x = 10;
+        var foo = {
+            x: 20,
+            bar: function () {
+                // var x = 30;
+                return this.x;
+            }
+        };
+        console.log(foo.bar()) //20
+        console.log((foo.bar)())  //20
+
+
+        console.log(
+            (f = foo.bar)(), // 10.
+            (foo.bar = foo.bar)(), // 10.
+
+            (foo.bar, foo.bar)()    //10.
+        );
+
+
+      //  foo.bar = foo.bar;
+        console.log(foo.bar());  //20
+
+
+        function password1(st) {
+            var arry = st.split('');
+            for (var i = 0; i < arry.length; i++) {
+                if (i % 3 == 0) {
+                    arry[i] = arry[i] + ',';
+                }
+            }
+            return arry.join('');
+
+        }
+        console.log(password1('1，234'));
+        console.log(password1('123，456，789，521'));
+
+        function password2(st) {
+            var index = 3;
+            var p = '';
+            for (var i = 0; i < st.length; i++) {
+                if (i % index == 0) {
+                    p = st.replace(st.charAt(i), st.charAt(i) + ',');
+                }
+                index += 1;
+                st = p;
+            };
+            return p;
+        }
+        //   console.log( password2('12345678'));
+
+        function toUppercase(st) {
+            var arr = st.split('-');
+            for (var i = 1; i < arr.length; i++) {
+                //  arr[i] = arr[i].replace(arr[i].charAt(0),arr[i].charAt(0).toUpperCase())
+                arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].substr(1);   //字符串操作写法
+
+            }
+            return arr.join('')
+
+        }
+
+        console.log(toUppercase('border-bottom-color'));
+
+
+        function toUppercase2(str) {
+            var re = /-(\w)/g;
+            return str.replace(re, function (a, b) {
+                return b.toUpperCase();
+
+            })
+        }
+        console.log(toUppercase2('border-bottom-color'));
+
+    </script>
+
+    <div class="zz" style="width:150px;height: 290px; background:url('../img/boy-walk.png') no-repeat 0 0"></div>
+    <div class="pp" style="width:270px;height: 210px; background: no-repeat 0 0">ppppppppp</div>
+
+
+    <script>
+        var TimeLine = function () {
+            this.arry = [];
+        };
+        TimeLine.prototype.add = function (time, fn) {
+            this.arry.push({  time: time,  fun: fn  })
+        };
+        TimeLine.prototype.start = function (time) {
+            var _this = this;
+            $.each(_this.arry, function (i, val) {
+                var t = Math.max(val.time - (time || 0), 0);
+                fn = val.fun;
+                setTimeout(fn, t);
+            })
+        };
+        var o = new TimeLine();
+        o.add(1000, function () {console.log('1111') });
+        o.add(2000, function () {  console.log('2222') });
+        o.add(3000, function () { console.log('3333') });
+        o.add(4000, function () { console.log('4444')  });
+        o.add(5000, function () {  console.log('5555')  });
+        // 直接从 跳到1000执行，<=1000 的立即执行
+        o.start(3000);
+
+
+    </script>
+
+
+
+    <div style="position: relative;width: 180px;height: 100px;background: url('../img/t_jixiang.png') no-repeat 0 0;
+        -webkit-transform: rotateY(60deg) rotate(10deg)  translate(0,-20px);
+"></div>
+
+    <div style="width: 800px;height: 600px;margin: 0 auto">
+        <div style="width: 800px;height: 600px;position: relative">
+            <canvas style="position: absolute;left: 0;bottom: 0;" id="cans1" width="800" height="600"></canvas>
+            <canvas style="position: absolute;left: 0;bottom: 0;" id="cans2" width="800" height="600"></canvas>
+        </div>
+    </div>
+
+
+    <div>
+        <canvas id="myCanvas" width="500" height="600" style="border:1px solid #d3d3d3;">
+            Your browser does not support the HTML5 canvas tag.
+        </canvas>
+    </div>
+
+
+    <script>
+        var c = document.getElementById("myCanvas");
+        var ctx = c.getContext("2d");
+
+        ctx.lineWidth = 5;
+        //   ctx.rotate(30*Math.PI/180);
+
+        drawStart(ctx, 15, 30, 50, 50);
+
+        function drawStart(ctx, r, R, x, y) {
+            ctx.beginPath();
+            for (var i = 0; i < 5; i++) {
+
+                ctx.lineTo(Math.cos((18 + 72 * i) / 180 * Math.PI) * R + x,
+                    - Math.sin((18 + 72 * i) / 180 * Math.PI) * R + y
+
+                );
+                ctx.lineTo(Math.cos((54 + 72 * i) / 180 * Math.PI) * r + x,
+                    - Math.sin((54 + 72 * i) / 180 * Math.PI) * r + y
+
+                )
+            }
+            ctx.closePath();
+            ctx.strokeStyle = 'red';//填充
+            ctx.fillStyle = 'yellow';//边框
+
+            ctx.fill();
+            ctx.stroke();
+
+        }
+
+    </script>
+
+
+
+
+
+    <canvas id="gameCanvas" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML5 canvas tag.
+    </canvas>
+
+    <script>
+        var canvas = null;
+        var img = null;
+        var ctx = null;
+        var imageReady = false;
+        var m;
+
+        window.onload = function () {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            img = new Image();
+            img.src = '../img/boy-walk.png';
+            img.onload = function () {
+                redraw();
+
+            };
+            canvas.width = document.documentElement.clientWidth;
+            canvas.height = document.documentElement.clientHeight;
+
+        };
+
+        window.onresize = function () {
+            resize()
+        };
+
+        function resize() {
+            canvas.width = document.documentElement.clientWidth;
+            canvas.height = document.documentElement.clientHeight;
+            redraw();
+
+        }
+
+        function redraw() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, 150, 290, canvas.width / 2 - 75, canvas.height / 2 - 145, 150, 290);
+        }
+
+    </script>
+    <canvas id="canvas" style="width:960px;height:250px;border:1px solid #d3d3d3;">
+        Your browser does not support the HTML5 canvas tag.
+    </canvas>
+    <canvas id="offcanvas" style="width:1900px;height: 500px;border:1px solid #d3d3d3;">
+        Your browser does not support the HTML5 canvas tag.
+    </canvas>
+
+
+    <script>
+        var c = document.getElementById('canvas');
+        var ctx = c.getContext("2d");
+        var offc = document.getElementById('offcanvas');
+        var offctx = offc.getContext("2d");
+
+        var imgs = new Image();
+        imgs.src = '../f0a5f2678f2d42abc2faf019a2b9b5c0.jpg';
+        imgs.onload = function () {
+            ctx.drawImage(imgs, 0, 0, 960, 250);
+            offctx.drawImage(imgs, 0, 0, 1900, 500);
+        };
+        function getDistance(x, y) {
+            var offx = c.getBoundingClientRect().left;
+            var offy = c.getBoundingClientRect().top;
+            return {
+                x: x - offx,
+                y: y - offy
+            }
+        }
+        var r = 50, isTrue = false;
+
+
+        c.onmousedown = function (e) {
+            isTrue = true;
+            var point = getDistance(e.clientX, e.clientY);
+            ctx = c.getContext("2d");
+            ctx.clearRect(0, 0, 960, 250);
+            ctx.drawImage(imgs, 0, 0, 960, 250);
+            ctx.drawImage(offc, point.x * 2 - 50, point.y * 2 - 50, 100, 100, 100, 0, 100, 100);
+        };
+
+        c.onmousemove = function (e) {
+
+            if (isTrue) {
+                var point = getDistance(e.clientX, e.clientY);
+                console.log('x=' + point.x + ';y=' + point.y);
+                ctx = c.getContext("2d");
+                ctx.clearRect(0, 0, 960, 250);
+                ctx.drawImage(imgs, 0, 0, 960, 250);
+                ctx.drawImage(offc, point.x * 2, point.y * 2, 100, 100, 100, 20, 100, 100);
+            }
+
+        };
+        c.onmouseup = function (e) {
+            isTrue = false;
+            ctx = c.getContext("2d");
+            ctx.clearRect(0, 0, 960, 250);
+            ctx.drawImage(imgs, 0, 0, 960, 250);
+
+        };
+
+    </script>
+    <br/><br/><br/><br/><br/><br/><br/>
+</body>
+
+</html>

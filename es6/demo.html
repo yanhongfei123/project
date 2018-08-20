@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Documen</title>
+</head>
+
+<body>
+
+    <script>
+        var s = new Set([1, 2, 3, 1, 2, 5, 4, 5]);
+        let arrayLike = {
+            '0': '100',
+            '2': '200',
+            '1': '300',
+            length: 3
+        };
+        console.log(Array.from(arrayLike));
+
+
+
+        var promise1 = new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                resolve(10)
+            }, 1000)
+        });
+
+        promise1.then(function (data) {
+            console.log(data); //10
+            return data + 10;
+        }).then(function (data) {
+            console.log(data) //20
+        });
+
+
+
+        function loadImageAsync(url) {
+            return new Promise(function (resolve, reject) {
+                var image = new Image();
+                image.onload = function () {
+                    resolve(image);
+                };
+                image.onerror = function () {
+                    reject(new Error('Could not load image at ' + url));
+                };
+
+                image.src = url;
+            });
+        }
+        // loadImageAsync('http://10.18.200.55:8080/shop/photoserver/images/1/2016/12/19/f62e888d-15f7-4cfd-bfa5-7b5b63ed3ed0.jpg').
+        // then(function (data) {
+        //     document.body.appendChild(data)
+        //      console.log(data)
+        // })
+
+        
+    </script>
+
+    <script>
+        function timerPromise(delay) {
+            return new Promise(function (resolve) {
+                setTimeout(function () {
+                    console.log(delay)
+                    resolve(delay);
+                }, delay);
+            });
+        }
+
+        function timerPromise2() {
+            return new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    reject(999)
+                }, 10)
+            });
+        }
+        // 任何一个promise变为resolve或reject 的话程序就停止运行
+        // 只有第一个promise才会执行then回调 , 后面的promise也会执行内部代码，但不会resolve()
+        Promise.race([
+            timerPromise(1000),
+            timerPromise(2000),
+            timerPromise(3000),
+            timerPromise(4000),
+            timerPromise2(),
+        ]).then(function (value) {
+            console.log(value);
+        }).catch(function (reason) {
+            console.log(reason)
+        });
+
+
+
+
+        //请求某个图片资源
+        function requestImg() {
+            var p = new Promise(function (resolve, reject) {
+                var img = new Image();
+                img.onload = function () {
+                    alert('虽然reject了，但是还会执行，只是不会执行resolve')
+                    resolve(img);
+                }
+                img.src = 'https://images.limin.com/imageUrl/manage/201803/1520414135086.png';
+            });
+            return p;
+        }
+
+        //延时函数，用于给请求计时
+        function timeout() {
+            var p2 = new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    reject('图片请求超时');
+                }, 10);
+            });
+            return p2;
+        }
+
+        Promise.race([requestImg(), timeout()])
+            .then(function (results) {
+                console.log(results);
+            })
+            .catch(function (reason) {
+                console.log(reason);
+            });
+    </script>
+
+    <script>
+        var str = 'aaa'; // 'aaabbcc'   'bbbccc'  'abbccc'
+
+        const formate = (str) => {
+            return str.replace(/(\w)\1*/g, (reg, c) => reg.length + c)
+
+        }
+        console.log(formate('aaabbcc'))
+        console.log(formate('abcdd'))
+        console.log(formate('abbcccd'))
+
+
+        var json = '[{code:000002,name:万科AAss},{code:601328,name:交通银ddd行}]'.replace(/(\w+):([^},{]+)/g, function (reg,
+            c) {
+            var item = reg.split(':');
+            return '"' + item[0] + '":"' + item[1] + '"'
+        })
+        console.log(json)
+        console.log(JSON.parse(json))
+    </script>
+
+    <script>
+    </script>
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+@import  './mixin.scss';
+.footer{
+    width: 100%;
+     position: fixed;
+     bottom: 0;
+     left:0;
+     padding: 0.6rem 0;
+     border-top:1px solid #e6e6e6;
+     background: #FFF;
+    .footerNav{
+      text-align: center;
+      line-height: 0.5;
+       i{
+         display:block;
+         margin-bottom: 5px;
+       }
+       span{
+         font-size: 0.6rem;
+
+       }
+        
+    }
+     .active{
+       .iconfont:before ,span{  color:#1296db }
+     }
+ }

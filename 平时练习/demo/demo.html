@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="jquery-1.8.2.min.js"></script>
+</head>
+
+<body>
+    <style>
+        td {
+            padding: 10px
+        }
+    </style>
+    <table id="table"></table>
+
+
+
+    <script>
+        function addClass(obj, className) {
+            obj.className = obj.className ? obj.className + ' ' + className : className
+        }
+
+        function each(arr, fn) {
+            Array.prototype.forEach.call(arr, fn)
+        }
+
+        var ul = document.querySelectorAll('.list li');
+
+        each(ul, function (item) {
+            addClass(item, 'active')
+        });
+
+
+        function Person() {
+            this.method1 = function () { }
+        }
+        Person.prototype.method2 = function () { }
+
+        function Man() { }
+        Man.prototype = new Person();
+        console.log(new Person())
+        Man.prototype.m1 = function () { }
+        Man.prototype.m2 = function () { }
+
+        var m = new Man();
+        console.log(m);
+
+        console.log(Man.prototype.hasOwnProperty('method1'))
+        console.log(Man.prototype.hasOwnProperty('method2'))
+
+    </script>
+    <input id="file" type="file">
+    <img id="img" width="300" height="300" src="" alt="">
+
+
+
+    <div id="cont" style="display: none;cursor: pointer;position:relative;width:300px;height: 300px;background: burlywood">
+        <span style="position: absolute;top:0;left: 0"></span>
+    </div>
+    <script>
+        $('#file').change(function () {
+            var file = $('#file')[0].files[0];
+            var reader = new FileReader;
+            reader.onload = function (e) {
+                $('#img').attr('src', e.target.result)
+            };
+            reader.readAsDataURL(file)
+        });
+
+        $('#cont').on('mousedown', function (e) {
+            var _this = $(this);
+            var startX = e.clientX, startY = e.clientY;
+            console.log(startX)
+
+            _this.find('span').css({
+                'left': startX - _this.offset().left + 'px',
+                'top': startY - _this.offset().top + 'px'
+            });
+            document.onmousemove = (function (e) {
+                e = e || window.event;
+                var moveX = e.clientX, moveY = e.clientY;
+                var disX = moveX - startX, disY = moveY - startY;
+                if (disX > 0 && disY > 0) {
+                    _this.find('span').width(moveX - startX).height(moveY - startY).css('border', '1px dotted  #ff2514');
+                }
+            });
+            document.onmouseup = function () {
+                document.onmouseup = null;
+                document.onmousemove = null;
+                $('#cont').off('mousedown')
+            }
+        });
+
+        $('#cont span').mousedown(function (e) {
+            var _this = $(this);
+            var startX = e.clientX, startY = e.clientY;
+            var left = _this[0].offsetLeft;
+            var top = _this[0].offsetTop;
+            document.onmousemove = (function (e) {
+                e = e || window.event;
+                var moveX = e.clientX, moveY = e.clientY;
+                var disX = moveX - startX, disY = moveY - startY;
+                _this.css({
+                    'left': disX + left + 'px',
+                    'top': disY + top + 'px'
+                });
+
+            });
+            document.onmouseup = function () {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        })
+
+    </script>
+
+    <div id="parent" class="parent">
+        <div class="clas1">
+            <ul>
+                <li>111</li>
+                <li>2222</li>
+            </ul>
+        </div>
+        <div class="clas2"></div>
+        <p></p>
+    </div>
+
+    <script>
+        console.log(document.getElementById('parent').children)
+
+        function getDomTree(parent) {
+            var domTreeList = [];
+
+            function loop(parent){
+                var treeList = [];
+                var domTree = {};
+                var clas = parent.className;
+                var id = parent.id;
+                var children = parent.children;
+                domTree['clas'] = clas || '';
+                domTree['id'] = id || '';
+                if (children.length) {
+                    domTree['children'] = [];   
+                     for(var i =0;i<children.length;i++){
+                        treeList.push(domTree);                       
+                        loop(children[i])
+                     }
+                     
+                     
+                }else{
+                   
+                }
+
+                domTreeList.push(domTree)
+            }
+            loop(parent);
+
+            return  domTreeList
+
+        }
+
+       console.log( getDomTree(document.getElementById('parent')))
+
+    </script>
+
+</body>
+
+</html>

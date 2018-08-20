@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Documen</title>
+</head>
+
+<body>
+    <script>
+        alert(10);
+
+        function A() {
+            this.name = '11'
+        }
+        A.prototype.getName = function () {
+            alert(this.name)
+        }
+
+        A.sex = '男';
+        function B(name) {
+
+            this.age = 20;
+            A.apply(this, arguments)
+        }
+        // var b = new B()
+        //  console.log(b.constructor) // function B(){  }
+
+        B.prototype = Object.create(A.prototype);
+
+        var b = new B();
+        var a = new A();
+        console.log(a)
+        console.log(b.constructor)
+
+
+        // 子类必须在constructor方法中调用super方法，否则新建实例报错。
+        //因为子类没有自己的this对象，而是继承了父类的this对象，然后对其进行加工。如果不调用super方法，
+        //子类得不到this对象。
+
+        // ps：super关键字指代父类的实例，即父类的this对象。在子类构造函数中，调用super后，
+        //才可使用this关键字，否则报错。
+
+
+        // es6 继承
+        class C {
+            constructor() {
+                this.name = 'name';
+                this.age = 'age'
+            }
+            //静态属性，不会被继承，只有自己可以访问
+            static getName() {
+                alert(this.name)
+            }
+
+        }
+
+        console.log( C.getName())
+
+
+
+
+
+        class D extends C {
+            constructor(name, age) {
+                super() // 调用父类的   constructor(name,age)，相当于 C.apply(this,arguments)
+                this.d = 'D';
+            }
+
+        }
+
+        class E extends D {
+            constructor(name, age) {
+                super() // 调用父类的   constructor(name,age)，相当于 C.apply(this,arguments)
+                this.e = 'E';
+            }
+
+        }
+
+        var d = new E();
+        // var c = new C();
+        console.log(C.getName())
+        console.log(d instanceof E)
+        console.log(d instanceof D)
+        console.log(d instanceof C);
+
+
+
+
+    </script>
+
+
+
+</body>
+
+</html>
+

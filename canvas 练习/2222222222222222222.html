@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tab切换-延迟</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /><!--加上这个IE7和IE8显示效果相同，只须兼容IE6 IE7 火狐等-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"><!---告诉ie浏览器采用最新的css3渲染模式-->
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script type="text/javascript" src="../jquery-1.8.2.min.js"></script>
+    <link rel="stylesheet" href="../企业网站/css/basic.css" type="text/css"/>
+</head>
+<body>
+
+<div id="drag" style="width: 200px;height: 100px;background-color: darkslategray;position:absolute;cursor:pointer;top:100px;left: 0;"></div>
+<script>
+
+</script>
+
+<div class="div" style="width: 100px;height: 50px;border:1px solid #000000;clear: both;margin-left: 400px">开始抽奖</div>
+<button class="btn" type="button">开始</button>
+<button class="btn2" type="button">暂停</button>
+<script>
+    $(function(){
+
+        obj.init();
+
+    })
+</script>
+
+<script>
+    var obj={
+        init:function(){
+            this.arr = ['1111', '22222', '333333', '44444'];
+            this.primy = 0;
+            this.oBtn1=$('.btn');
+            this.oBtn2=$('.btn2');
+            this.time=null;
+            this.num=0;
+            this.start();
+            this.stop();
+            this.move();
+            this.keyCodeStop()
+        },
+        move:function(){
+            var  i=0;
+            $(document).click(function(){
+                i++;
+                if(i%5==0){
+                    $('#drag').animate({left:100*i/5 +'px'},100)
+                }
+                console.log(i)
+            })
+
+        },
+        start:function(){
+            var _this=this;
+            this.oBtn1.click(function () {
+                _this.primy = 1;
+                clearInterval( _this.time);
+                _this.time = setInterval(function () {
+                    if ( _this.num == 3) _this.num = 0;
+                    else  _this.num++;
+                    $('.div').text(_this.arr[_this.num]);
+                }, 100);
+
+                console.log(_this.primy)
+            });
+
+        },
+        stop:function(){
+            var _this=this;
+            this.oBtn2.click(function () {
+                clearInterval( _this.time);
+                _this.primy = 0;
+                console.log(_this.primy)
+            });
+        },
+        keyCodeStop:function(){
+            var  _this=this;
+            $(document).keyup(function (e) {
+                var el = e || event;
+                if (el.keyCode ==13) {
+                    if (_this.primy == 0) {
+                        _this.primy = 1;
+                        _this.oBtn1.click();
+                    }
+                    else {
+                        _this.primy = 0;
+                        _this.oBtn2.click();
+                    }
+                }
+            });
+            console.log(_this.primy)
+        }
+
+    };
+
+</script>
+<canvas id='gameCanvas'></canvas>
+
+<script>
+    var canvas = null;
+    var img = null; var ctx = null;
+    var imageReady = false;
+    var frame = 0;
+    window.onresize=function(){
+        resize()
+    }
+    window.onload=function(){
+        canvas = document.getElementById('gameCanvas');
+        ctx = canvas.getContext('2d');
+        canvas.width = canvas.parentNode.clientWidth;
+        canvas.height = canvas.parentNode.clientHeight;
+
+        img = new Image();
+        img.src ='jq轮播/move.png';
+        img.onload =function(){
+            update()
+        };
+
+    };
+    function resize() {
+        canvas.width = canvas.parentNode.clientWidth;
+        canvas.height = canvas.parentNode.clientHeight;
+        redraw();
+    }
+    function redraw() {
+        ctx.fillStyle ='#000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img,frame*146,0,146,112,canvas.width/2-73, canvas.height/2-56,146,112);
+    }
+
+    function update() {
+        redraw();
+        frame++;
+        if (frame>3) frame = 0;
+        requestAnimFrame(update);
+    }
+
+    window.requestAnimFrame = (function(){
+        return window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            function( callback ){
+                window.setTimeout(callback, 1000);
+            };
+    })();
+
+
+    my.requestAnimFrame = (function () {
+        var func = window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+            function (callback)
+            {
+                window.setTimeout(callback, 1000 / this.fps);
+
+            }
+    })();
+
+</script>
+
+
+</body>
+</html>

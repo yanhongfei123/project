@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="../../jquery-1.9.1.min.js"></script>
+</head>
+
+<body>
+    <script>
+        var singleDemo = (function () {
+            // 实例对象
+            var instance;
+            function Person(age) {
+                this.name = '张三';
+                this.age = age;
+            }
+            Person.prototype.getAge = function () {
+
+            }
+
+            return {
+                getInstance: function (age) {
+                    if (!instance) {
+                        instance = new Person(age);
+                        console.log('我只实例化一次哦')
+                    }
+                    return instance
+                }
+            }
+
+        })();
+
+        singleDemo.getInstance();// 我只被实例化一次哦
+        singleDemo.getInstance(); // 从内存中返回上一次被实例化过的实例
+
+    
+
+
+    </script>
+
+
+</body>
+
+</html>

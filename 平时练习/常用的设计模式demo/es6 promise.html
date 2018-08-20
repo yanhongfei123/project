@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var promise1 = new Promise(function (resolve) {
+            setTimeout(function () {
+                resolve(1);
+            }, 300);
+        });
+        var promise2 = new Promise(function (resolve) {
+            setTimeout(function () {
+                resolve(2);
+            }, 200);
+        });
+        var promise3 = new Promise(function (resolve) {
+            setTimeout(function () {
+                resolve(3);
+            }, 100);
+        });
+        
+        Promise.all([promise1, promise2,promise3]).then(function (value) {
+            console.log(value); // 打印[1,2]
+        });
+    </script>
+    <script>
+        // Promise.race的含义是只要有一个promise对象进入FulFilled或者Rejected状态的话
+        //程序就会停止，且会继续后面的处理逻辑；
+       // `delay`毫秒后执行resolve
+        function timerPromise(delay){
+            return new Promise(function(resolve){
+                setTimeout(function(){
+                    resolve(delay);
+                    console.log('delay === '+ delay)
+                },delay);
+            });
+        }
+        // 任何一个promise变为resolve或reject 的话程序就停止运行
+        Promise.race([
+            timerPromise(1),
+            timerPromise(32),
+            timerPromise(64),
+            timerPromise(128)
+        ]).then(function (value) {
+            console.log('delay === '+ value);    // => 1
+        });
+
+    </script>
+
+</body>
+
+</html>

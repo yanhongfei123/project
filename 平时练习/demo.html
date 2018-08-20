@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>CSS3动画技能栏</title>
+    <script src="../jquery-1.9.1.min.js"></script>
+    <style>
+        /* RESET */
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* DEMO BODY */
+
+        body {
+            overflow-x: hidden;
+            overflow-y: scroll;
+            font-family: MuseoSans, Georgia, "Times New Roman", Times, serif;
+            font-size: 13px;
+            color: #444;
+            border-top: 3px solid #444;
+            background-color: #E4E6E5;
+            overflow-x: hidden;
+        }
+
+        section .demo {
+            width: 530px;
+            margin: 15em auto;
+            overflow: hidden;
+        }
+
+        ul.notes {
+            clear: both;
+        }
+
+        ul.notes li {
+            float: left;
+            margin-right: 3em;
+            display: inline;
+        }
+
+        ul.notes li:last-child {
+            margin: 0;
+        }
+
+        ul.notes li span.skill {
+            display: block;
+            text-align: center;
+            padding: 10px 0;
+            text-shadow: 1px 0 0 #FFFFFF;
+        }
+
+        .notesite {
+            display: inline-block;
+            position: relative;
+            width: 1em;
+            height: 1em;
+            font-size: 5.4em;
+            cursor: default;
+        }
+
+        .notesite>.percent {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            font-size: 25px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .notesite>.percent .dec {
+            font-size: 15px;
+        }
+
+        .notesite>#slice {
+            position: absolute;
+            width: 1em;
+            height: 1em;
+            clip: rect(0px, 1em, 1em, 0.5em);
+        }
+
+        .notesite>#slice.gt50 {
+            clip: rect(auto, auto, auto, auto);
+        }
+
+        .notesite>#slice>.pie {
+            position: absolute;
+            border: 0.1em solid #444;
+            width: 0.8em;
+            height: 0.8em;
+
+            -moz-border-radius: 0.5em;
+            -webkit-border-radius: 0.5em;
+            border-radius: 0.5em;
+            -webkit-animation: craw 2s linear;
+            -webkit-animation-iteration-count: 1;
+        }
+
+        @-webkit-keyframes craw {
+            0% {
+                clip: rect(0em, 1em, 0em, 0.5em);
+            }
+            50% {
+                clip: rect(0em, 1em, 1em, 0.5em);
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            100% {
+                clip: rect(0em, 1em, 1em, 0em);
+                -webkit-transform: rotate(90deg);
+            }
+        }
+
+        li.html .notesite>#slice>.pie {
+            border-color: #DF6C4F;
+        }
+
+        .notesite.fill>.percent {
+            display: none;
+        }
+
+        li.html .notesite:before {
+            background: #DF6C4F;
+        }
+    </style>
+</head>
+
+<body class="home">
+    <div class="wrapper">
+        <section>
+            <div class="demo">
+                <ul class="notes">
+                    <li class="html">
+                        <div class="notesite" id="note_0" dir="100">
+                            <div class="percent">
+                                <span class="int">0</span>
+                            </div>
+                            <!-- percent里面加个span -->
+                            <div id="slice" class="gt50">
+                                <!--<div class="pie"></div>-->
+                                <div class="pie fill">
+                                </div>
+                            </div>
+                        </div>
+                        <span class="skill">HTML</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <script>
+
+        const safeGet = (data, path) => {
+            try {
+                return eval('data.' + path);
+            } catch (e) { return undefined }
+        }
+
+        safeGet({ a: { b: { c: 500 } } }, 'a.b.c')
+
+        Array.prototype.every = function (fn) {
+            for (var i = 0; i < this.length; i++) {
+                if (!fn.call(this, this[i], i, this)) {
+                    return false
+                }
+            }
+            return true
+        }
+        Array.prototype.reduce = function (fn) {
+            var k = 0, arg1 = arguments[1];
+            var arr = this, o;
+            if (arg1 === undefined) {
+                o = arr[0];
+                k++
+            } else {
+                o = arg1
+            }
+
+            for (var i = k; i < arr.length; i++) {
+                o = fn.call(this, o, arr[i], i, this)
+            }
+            return o;
+        }
+
+        console.log([[1], 2, 3].reduce(function (pre, next, index, self) {
+            console.log(pre)
+            return pre.concat(next)
+        }))
+
+        // 有个函数osp 使得console.log（osp（2）） 打印2。[1,2,3]
+        // console.log（osp（2）（4））打印8。
+        //console.log（osp（2）（3）（10））打印60。
+
+        // 九九乘法表
+        // for(var i = 1 ;i<10;i++){
+        //     for(var k = i;k<10;k++){
+        //        console.log(i+'*'+k + '=' + i*k)
+        //    }
+        // }
+
+        // 金字塔形状
+
+        function add(x) {
+            var sum = x;
+            var tmp = function (y) {
+                sum = sum + y;
+                return tmp;
+            };
+            tmp.toString = function () {
+                return sum;
+            };
+            return tmp;
+        }
+        console.log(add(1)(2)(3));  //6
+        console.log(add(1)(2)(3)(4));   //10
+
+
+
+
+        function getLight() {
+            // 存储每盏灯的状态 默认为1,1为亮  0 为熄灭
+            var arr = new Array(100).fill(1);
+            for (var i = 1; i <= 101; i++) {
+                for (var k = 1; k <= 101; k++) {
+                    if (k % i == 0) { //操作 编号是i倍数的灯
+                        arr[k - 1] = arr[k - 1] == 1 ? 0 : 1
+                    }
+                }
+            }
+
+            for (var j = 1; j <= 100; j++) {
+                if (arr[j - 1] == 1) {
+                    //  console.log('j====' + j)
+                }
+            }
+
+
+        }
+
+        getLight(100);
+
+        getFirstTimes(2);
+        function getFirstTimes(t) {
+            var str = 'today isa good  day ';
+            var arr = [], arr2 = [];
+            for (var n = 0; n < str.length; n++) {
+                var item = str[n], index = arr.indexOf(item);
+                if (arr2.indexOf(t) >= 0) {     // 判断arr里是否出现数字t,出现就查找他的索引，通过索引找到 arr 里对应的字符       
+                    console.log('字符串' + arr[arr2.indexOf(t)] + '首先出现' + t + '次')
+                    return
+                }
+                if (index == -1) {
+                    arr.push(item);
+                    arr2.push(1);
+                } else {
+                    arr2[index] += 1
+                }
+            }
+
+        }
+
+
+        Date.prototype.format = function (fmt) {
+            var o = {
+                "M+": this.getMonth() + 1,                 //月份 
+                "d+": this.getDate(),                    //日 
+                "h+": this.getHours(),                   //小时 
+                "m+": this.getMinutes(),                 //分 
+                "s+": this.getSeconds(),                 //秒 
+                "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+                "S": this.getMilliseconds()             //毫秒 
+            };
+            if (/(y+)/.test(fmt)) {
+                fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+            }
+            for (var k in o) {
+                if (new RegExp("(" + k + ")").test(fmt)) {
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                }
+            }
+            return fmt;
+        }
+
+        var time1 = new Date().format("yyyy-MM-dd hh:mm:ss");
+
+        console.log(time1);
+    </script>
+
+    <script>
+        function getTotal() {
+            var total = 0 , lastEnd = 0;
+            return function (start, end) {
+                if (total > 0) {
+                    console.log('下一次开始直接从内存读取上一次计算的结果')
+                    console.log('上次最大的数是lastEnd===' + lastEnd)
+
+                    total = total  + (end - lastEnd)  // 更新本次total => 上次计算结果 + 本次增加的数
+                    lastEnd = end; // 更新上次最大的数
+                   // console.log('本次total===' + total)
+                    return total 
+                } else {
+                    console.log('第一次累加计算')
+                    lastEnd = end ; // 保存上次最大的数
+                    for (var i = start; i < end; i++) {
+                        total += i
+                    }
+                    return total;
+
+                }
+            }
+        }
+
+        var total = getTotal();
+         console.log( total(1,100))
+         console.log( total(1,101))
+         console.log( total(1,110))
+         console.log( total(1,200))
+         console.log( total(1,500))
+
+
+
+
+
+
+
+
+
+
+    </script>
+
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../jquery-1.9.1.min.js"></script>
+    <style>
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        .cont{
+            position:relative;
+            width:200%;
+            height: 120px;
+            line-height:120px;
+            font-size: 60px;
+            text-align: center;
+            margin-bottom: 50px;
+
+
+        }
+        .text{
+            width:50%;
+            float: left;
+            background-color: #808080;
+        }
+        .det{
+            width:500px;
+            float: left;
+            background-color: red;
+            color: #fff;
+        }
+
+    </style>
+</head>
+<body>
+
+
+
+<script>
+   function  deepCopy(p,o){
+       var  obj= o  || {};
+       for(var  i in  p){
+             if(typeof p[i]==='object'){
+                   obj[i]=p[i].constructor==='Array'? [] :{};
+                 deepCopy(p[i],obj[i])
+
+             }
+           else{
+                 obj[i]=p[i]
+             }
+
+       }
+       return  obj
+
+   }
+    console.log(deepCopy({a:[100,200,300],b:2},{c:3}))
+
+</script>
+
+
+
+<div class="wrap">
+    <div class="list"  style="overflow: hidden;">
+        <div class="cont" style="left: 0">
+            <div class="text">内容区域111</div>
+            <div class="det">删除</div>
+        </div>
+    </div>
+    <div class="list"  style="overflow: hidden;">
+        <div class="cont" style="left: 0">
+            <div class="text">内容区域222</div>
+            <div class="det">删除</div>
+        </div>
+    </div>
+    <div class="list" style="overflow: hidden;">
+        <div class="cont" style="left: 0">
+            <div class="text">内容区域3333</div>
+            <div class="det">删除</div>
+        </div>
+   </div>
+</div>
+<script>
+ var startX,moveX,disX;
+    $('.cont').each(function(i,val){
+        val.addEventListener('touchstart',function(e){
+            startX= e.touches[0].clientX;/*获取第一个手指的坐标*/
+        });
+        val.addEventListener('touchmove',function(e){
+            moveX= e.touches[0].clientX;
+            disX= moveX- startX;
+
+            if(disX<0){
+                if(parseInt(val.style.left)!=-500){
+                    if(parseInt(val.style.left)<-500){
+                        val.style.left='-500px';
+                        return  false
+                    }
+                    val.style.left=disX+'px';
+                }
+            }
+            else{
+                if(parseInt(val.style.left)!=0){
+                    if(parseInt(val.style.left)>0){
+                        val.style.left=0;
+                        return  false
+                    }
+                    val.style.left=(disX-500)+'px';
+                }
+            }
+        });
+
+        val.addEventListener('touchend',function(){
+            if(parseInt(val.style.left)>-250){
+                val.style.left=0
+            }
+            else {
+                val.style.left='-500px'
+            }
+        })
+    });
+
+ $('.wrap').on('click','.list',function(){
+     $(this).prependTo($(this).parent())
+ });
+    $('.det').on('click',function(){
+        var  isTrue=confirm('确定要删除吗?');
+        if(isTrue){
+            $(this).parent().remove()
+        }
+    })
+</script>
+
+</body>
+</html>
